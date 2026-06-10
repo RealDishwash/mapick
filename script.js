@@ -1,17 +1,53 @@
 /* ------------------------------------------------------------------
-   Valorant Map Picker — Best-of-3 Veto
-   Current competitive map pool. Edit this array if the pool rotates.
+   Best-of-3 Veto — current competitive map pool.
+
+   Riot does not expose the *competitive rotation* via any public API
+   (valorant-api.com lists every playable map, not the ranked subset),
+   so the 7-map membership below is curated — update it when the pool
+   rotates. Splash images and names are pulled live from valorant-api,
+   with the embedded UUIDs used only as an offline fallback.
    ------------------------------------------------------------------ */
+const COMPETITIVE_POOL = ["Ascent", "Breeze", "Fracture", "Haven", "Lotus", "Pearl", "Split"];
+
 const SPLASH = (id) => `https://media.valorant-api.com/maps/${id}/splash.png`;
-const MAP_POOL = [
-  { name: "Ascent",   img: SPLASH("7eaecc1b-4337-bbf6-6ab9-04b8f06b3319"), tint: "#3a6ea5" },
-  { name: "Breeze",   img: SPLASH("2fb9a4fd-47b8-4e7d-a969-74b4046ebd53"), tint: "#2fb6c9" },
-  { name: "Fracture", img: SPLASH("b529448b-4d60-346e-e89e-00a4c527a405"), tint: "#b58a3c" },
-  { name: "Haven",    img: SPLASH("2bee0dc9-4ffe-519b-1cbd-7fbe763a6047"), tint: "#4caf7d" },
-  { name: "Lotus",    img: SPLASH("2fe4ed3a-450a-948b-6d6b-e89a78e680a9"), tint: "#8e6fc4" },
-  { name: "Pearl",    img: SPLASH("fd267378-4d1d-484f-ff52-77821ed10dc2"), tint: "#2f9fd8" },
-  { name: "Split",    img: SPLASH("d960549e-485c-e861-8d71-aa9d1aed12a2"), tint: "#5a8fa8" },
-];
+const FALLBACK_SPLASH = {
+  Ascent:   "7eaecc1b-4337-bbf6-6ab9-04b8f06b3319",
+  Breeze:   "2fb9a4fd-47b8-4e7d-a969-74b4046ebd53",
+  Fracture: "b529448b-4d60-346e-e89e-00a4c527a405",
+  Haven:    "2bee0dc9-4ffe-519b-1cbd-7fbe763a6047",
+  Lotus:    "2fe4ed3a-450a-948b-6d6b-e89a78e680a9",
+  Pearl:    "fd267378-4d1d-484f-ff52-77821ed10dc2",
+  Split:    "d960549e-485c-e861-8d71-aa9d1aed12a2",
+};
+const TINTS = {
+  Ascent: "#3a6ea5", Breeze: "#2fb6c9", Fracture: "#b58a3c", Haven: "#4caf7d",
+  Lotus: "#8e6fc4", Pearl: "#2f9fd8", Split: "#5a8fa8",
+};
+
+/* Built from the fallback immediately so the app always works, then
+   refreshed with live data from valorant-api.com on load. */
+let mapPool = COMPETITIVE_POOL.map((name) => ({
+  name, img: SPLASH(FALLBACK_SPLASH[name]), tint: TINTS[name] || "#1d2731",
+}));
+
+async function loadMapPool() {
+  try {
+    const res = await fetch("https://valorant-api.com/v1/maps");
+    if (!res.ok) return;
+    const byName = {};
+    (await res.json()).data.forEach((m) => { byName[m.displayName] = m; });
+    mapPool = COMPETITIVE_POOL.map((name) => {
+      const m = byName[name];
+      return {
+        name,
+        img: (m && m.splash) || SPLASH(FALLBACK_SPLASH[name]),
+        tint: TINTS[name] || "#1d2731",
+      };
+    });
+  } catch (_) {
+    /* keep the fallback pool */
+  }
+}
 
 /* The Bo3 veto sequence (matches the official 10-step process). */
 function buildSteps() {
@@ -35,7 +71,6 @@ const els = {
   result: document.getElementById("result"),
   team1: document.getElementById("team1Name"),
   team2: document.getElementById("team2Name"),
-  poolPreview: document.getElementById("poolPreview"),
   coinArea: document.getElementById("coinArea"),
   coin: document.getElementById("coin"),
   tossResult: document.getElementById("tossResult"),
@@ -54,17 +89,6 @@ const els = {
 
 let state = null;
 
-/* ---------- Setup screen ---------- */
-function renderPoolPreview() {
-  els.poolPreview.innerHTML = "";
-  MAP_POOL.forEach((m) => {
-    const chip = document.createElement("span");
-    chip.className = "pool-chip";
-    chip.textContent = m.name;
-    els.poolPreview.appendChild(chip);
-  });
-}
-
 function teamName(team) {
   if (team === "A") return state.names.A;
   if (team === "B") return state.names.B;
@@ -78,7 +102,7 @@ function rollToss() {
   const t1 = els.team1.value.trim() || "Team 1";
   const t2 = els.team2.value.trim() || "Team 2";
   const team1Wins = Math.random() < 0.5;
-  // Toss winner becomes Team A and bans first.
+  // Toss winner bans first (internally that's the "A" role).
   return team1Wins
     ? { A: t1, B: t2, winner: t1, team1Wins }
     : { A: t2, B: t1, winner: t2, team1Wins };
@@ -111,7 +135,7 @@ function coinToss() {
     els.tossBtn.textContent = "Re-toss";
     els.tossBtn.classList.add("is-retoss");
     els.tossResult.innerHTML =
-      `<b>${assignment.winner}</b> wins the toss — Team A (bans first)`;
+      `<b>${assignment.winner}</b> wins the toss and bans first`;
     els.tossResult.classList.add("show");
     els.startBtn.classList.remove("hidden");
   }, 1450);
@@ -138,7 +162,7 @@ function startVeto() {
     names: { A: assignment.A, B: assignment.B },
     steps: buildSteps(),
     stepIdx: 0,
-    maps: MAP_POOL.map((m) => ({
+    maps: mapPool.map((m) => ({
       ...m,
       status: "available", // available | banned | picked
       pickedOrder: null,    // 1, 2, 3
@@ -422,4 +446,4 @@ els.resetBtn.addEventListener("click", () => {
   resetSetup();
   els.setup.classList.remove("hidden");
 });
-renderPoolPreview();
+loadMapPool();

@@ -97,20 +97,6 @@ main { max-width: 880px; margin: 0 auto; padding: 22px; }
 .team-b input:focus { border-color: var(--def); }
 .vs { color: var(--mute); font-weight: 700; font-size: 0.95rem; padding-bottom: 12px; }
 
-.pool-label {
-  margin: 26px 0 10px;
-  text-transform: uppercase; letter-spacing: 1px; font-size: 0.7rem;
-  font-weight: 700; color: var(--label);
-}
-.pool-preview { display: flex; flex-wrap: wrap; gap: 8px; }
-.pool-chip {
-  background: var(--field);
-  border: 1px solid var(--line);
-  padding: 6px 13px;
-  font-size: 0.82rem; font-weight: 500;
-  border-radius: 5px;
-}
-
 /* ---------- Buttons ---------- */
 .btn-primary {
   margin-top: 26px; width: 100%;
@@ -187,7 +173,10 @@ main { max-width: 880px; margin: 0 auto; padding: 22px; }
 .step-list li.active { color: #fff; background: var(--red); border-color: var(--red); }
 
 /* ---------- Map grid ---------- */
-.map-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+/* Flex wrap + centering so a partial last row (e.g. 3 of 7 maps) centers
+   instead of leaving an empty slot at the end. */
+.map-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.map-card { flex: 0 1 calc(25% - 9px); min-width: 150px; }
 .map-grid.reveal .map-card { animation: cardIn 0.35s ease backwards; }
 .map-grid.reveal .map-card:nth-child(1) { animation-delay: .02s; }
 .map-grid.reveal .map-card:nth-child(2) { animation-delay: .06s; }
