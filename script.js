@@ -109,6 +109,7 @@ function coinToss() {
     els.coin.classList.remove("spinning");
     els.tossBtn.disabled = false;
     els.tossBtn.textContent = "Re-toss";
+    els.tossBtn.classList.add("is-retoss");
     els.tossResult.innerHTML =
       `<b>${assignment.winner}</b> wins the toss — Team A (bans first)`;
     els.tossResult.classList.add("show");
@@ -124,6 +125,7 @@ function resetSetup() {
   els.tossBtn.classList.remove("hidden");
   els.tossBtn.disabled = false;
   els.tossBtn.textContent = "Coin Toss";
+  els.tossBtn.classList.remove("is-retoss");
 }
 
 /* Filled by the coin toss: which entered team is A (bans first) vs B. */

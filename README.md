@@ -1,6 +1,6 @@
-# Valorant Map Picker
+# mapick
 
-A simple Best-of-3 map veto tool for the current Valorant competitive map pool.
+A simple, readable Best-of-3 map veto tool for the current Valorant competitive map pool.
 
 **Live:** https://RealDishwash.github.io/valorant-map-picker/
 
