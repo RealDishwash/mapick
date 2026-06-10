@@ -81,6 +81,8 @@ function startVeto() {
       sideTeam: { A: null, B: null }, // side each team starts on
     })),
     pickCount: 0,
+    lastActed: null,   // index of map just banned/picked (for animation)
+    firstRender: true, // staggered card reveal on first veto render
   };
   els.setup.classList.add("hidden");
   els.result.classList.add("hidden");
@@ -102,6 +104,7 @@ function advance() {
     remaining.status = "picked";
     remaining.pickedOrder = 3;
     remaining.pickedBy = null; // decider not picked by a team
+    state.lastActed = state.maps.indexOf(remaining); // pulse the decider
     state.stepIdx++;
     return advance();
   }
@@ -159,12 +162,16 @@ function renderMaps() {
   const step = currentStep();
   const selectable = step && (step.type === "ban" || step.type === "pick");
   els.mapGrid.innerHTML = "";
+  // Stagger the cards in on the very first render only.
+  els.mapGrid.classList.toggle("reveal", state.firstRender);
+  state.firstRender = false;
   state.maps.forEach((m, idx) => {
     const card = document.createElement("div");
     card.className = "map-card";
     if (m.status !== "available") card.classList.add("disabled");
     if (m.status === "banned") card.classList.add("banned");
     if (m.status === "picked") card.classList.add("picked");
+    if (idx === state.lastActed) card.classList.add("just-acted");
 
     const art = document.createElement("div");
     art.className = "map-art";
@@ -173,6 +180,9 @@ function renderMaps() {
     card.appendChild(art);
 
     if (m.status === "banned") {
+      const slash = document.createElement("div");
+      slash.className = "slash";
+      card.appendChild(slash);
       const tag = document.createElement("span");
       tag.className = "tag ban";
       tag.textContent = "Banned";
@@ -210,6 +220,7 @@ function handleMapClick(idx) {
     map.pickedOrder = state.pickCount; // 1 then 2
     map.pickedBy = step.team;
   }
+  state.lastActed = idx;
   state.stepIdx++;
   advance();
 }
@@ -233,6 +244,7 @@ function chooseSide(step, map, side) {
   const opposite = side === "Attack" ? "Defense" : "Attack";
   map.sideTeam[chooser] = side;
   map.sideTeam[other] = opposite;
+  state.lastActed = null; // side choice doesn't ban/pick a map; stop replaying anims
   state.stepIdx++;
   advance();
 }
@@ -250,6 +262,13 @@ function finish() {
   ordered.forEach((m) => {
     const row = document.createElement("div");
     row.className = "result-map" + (m.pickedOrder === 3 ? " decider" : "");
+
+    if (m.img) {
+      const art = document.createElement("div");
+      art.className = "res-art";
+      art.style.backgroundImage = `url("${m.img}")`;
+      row.appendChild(art);
+    }
 
     const order = document.createElement("div");
     order.className = "result-order";
