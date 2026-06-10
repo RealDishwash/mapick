@@ -286,7 +286,8 @@ main { max-width: 940px; margin: 0 auto; padding: 22px; }
 }
 .map-card .map-art {
   position: absolute; inset: 0; background-size: cover; background-position: center;
-  opacity: 0.82; transition: opacity 0.2s, transform 0.4s, filter 0.3s;
+  opacity: 1; filter: saturate(1.12) contrast(1.05);
+  transition: opacity 0.2s, transform 0.4s, filter 0.3s;
 }
 .map-card::after { /* red edge highlight on hover */
   content: ""; position: absolute; inset: 0; pointer-events: none;
@@ -389,12 +390,19 @@ main { max-width: 940px; margin: 0 auto; padding: 22px; }
   clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
 }
 .result-map .res-art {
-  position: absolute; inset: 0; background-size: cover; background-position: center 35%;
-  opacity: 0.32; z-index: 0;
+  position: absolute; inset: 0; background-size: cover; background-position: center 38%;
+  opacity: 0.7; z-index: 0;
+  filter: saturate(1.1) contrast(1.04);
+  /* dissolve the image toward the text side so there's no hard rectangle edge */
+  -webkit-mask-image: linear-gradient(90deg, transparent 8%, #000 55%);
+  mask-image: linear-gradient(90deg, transparent 8%, #000 55%);
 }
 .result-map::after {
   content: ""; position: absolute; inset: 0; z-index: 0;
-  background: linear-gradient(90deg, rgba(8,11,15,0.95) 30%, rgba(8,11,15,0.55));
+  background: linear-gradient(90deg,
+    rgba(8,11,15,0.97) 0%,
+    rgba(8,11,15,0.78) 42%,
+    rgba(8,11,15,0.12) 100%);
 }
 .result-map.decider { border-left-color: var(--mute); }
 .result-map > * { position: relative; z-index: 1; }
