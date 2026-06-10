@@ -173,6 +173,65 @@ main { max-width: 940px; margin: 0 auto; padding: 22px; }
 .btn-primary:hover::after { transform: translateX(120%); }
 .btn-primary:active { transform: translateY(1px); }
 
+/* Result action row + secondary (copy) button */
+.result-actions { display: flex; gap: 14px; margin-top: 30px; }
+.result-actions .btn-primary { margin-top: 0; flex: 1; }
+.btn-secondary {
+  flex: 0 0 auto;
+  background: transparent; color: var(--ink);
+  border: 1px solid rgba(236, 232, 225, 0.25);
+  padding: 17px 30px;
+  font-family: 'Anton', sans-serif; font-style: italic;
+  font-size: 1.15rem; letter-spacing: 3px; text-transform: uppercase;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.btn-secondary:hover { border-color: var(--def); color: var(--def); }
+.btn-secondary.copied {
+  border-color: var(--def); color: #04110f; background: var(--def);
+}
+@media (max-width: 540px) {
+  .result-actions { flex-direction: column; }
+  .btn-secondary { width: 100%; }
+}
+
+/* ---------- Coin toss ---------- */
+.coin-area {
+  margin-top: 26px; display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.coin {
+  width: 96px; height: 96px; position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1.4s cubic-bezier(.2, .7, .2, 1);
+  cursor: pointer;
+}
+.coin-face {
+  position: absolute; inset: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Anton', sans-serif; font-style: italic; font-size: 2.6rem;
+  backface-visibility: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5), inset 0 0 22px rgba(0, 0, 0, 0.3);
+}
+.coin-heads {
+  background: radial-gradient(circle at 35% 30%, #ff707d, var(--red) 55%, var(--red-deep));
+  color: #fff;
+}
+.coin-tails {
+  background: radial-gradient(circle at 35% 30%, #84f3ee, var(--def) 55%, #1fb3ab);
+  color: #04110f;
+  transform: rotateY(180deg);
+}
+.coin.spinning { cursor: default; }
+.toss-result {
+  font-family: 'Anton', sans-serif; font-style: italic; text-transform: uppercase;
+  font-size: 1.2rem; letter-spacing: 1px; text-align: center; min-height: 1.4em;
+  opacity: 0; transition: opacity 0.3s;
+}
+.toss-result.show { opacity: 1; }
+.toss-result b { color: var(--red); }
+
 /* ---------- Status bar ---------- */
 .status-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
 .actor-badge {

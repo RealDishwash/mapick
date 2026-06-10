@@ -33,9 +33,13 @@ const els = {
   setup: document.getElementById("setup"),
   veto: document.getElementById("veto"),
   result: document.getElementById("result"),
-  teamA: document.getElementById("teamAName"),
-  teamB: document.getElementById("teamBName"),
+  team1: document.getElementById("team1Name"),
+  team2: document.getElementById("team2Name"),
   poolPreview: document.getElementById("poolPreview"),
+  coinArea: document.getElementById("coinArea"),
+  coin: document.getElementById("coin"),
+  tossResult: document.getElementById("tossResult"),
+  tossBtn: document.getElementById("tossBtn"),
   startBtn: document.getElementById("startBtn"),
   actorBadge: document.getElementById("actorBadge"),
   instruction: document.getElementById("instruction"),
@@ -45,6 +49,7 @@ const els = {
   sidePrompt: document.getElementById("sidePrompt"),
   resultMaps: document.getElementById("resultMaps"),
   resetBtn: document.getElementById("resetBtn"),
+  copyBtn: document.getElementById("copyBtn"),
 };
 
 let state = null;
@@ -66,11 +71,63 @@ function teamName(team) {
   return "";
 }
 
+/* ---------- Coin toss (decides who is Team A / Team B) ---------- */
+let coinDeg = 0; // cumulative coin rotation, so each toss spins forward
+
+function rollToss() {
+  const t1 = els.team1.value.trim() || "Team 1";
+  const t2 = els.team2.value.trim() || "Team 2";
+  const team1Wins = Math.random() < 0.5;
+  // Toss winner becomes Team A and bans first.
+  return team1Wins
+    ? { A: t1, B: t2, winner: t1, team1Wins }
+    : { A: t2, B: t1, winner: t2, team1Wins };
+}
+
+function coinToss() {
+  if (els.coin.classList.contains("spinning")) return;
+  assignment = rollToss();
+  els.coinArea.classList.remove("hidden");
+  els.tossResult.classList.remove("show");
+  els.startBtn.classList.add("hidden");
+  els.coin.classList.add("spinning");
+  els.tossBtn.disabled = true;
+
+  // Spin >=5 turns and land on the winner's face (heads = Team 1, tails = Team 2).
+  const base = coinDeg + 360 * 5;
+  coinDeg = Math.ceil(base / 360) * 360 + (assignment.team1Wins ? 0 : 180);
+  els.coin.style.transform = `rotateY(${coinDeg}deg)`;
+
+  clearTimeout(coinToss._t);
+  coinToss._t = setTimeout(() => {
+    els.coin.classList.remove("spinning");
+    els.tossBtn.disabled = false;
+    els.tossBtn.textContent = "Re-toss";
+    els.tossResult.innerHTML =
+      `<b>${assignment.winner}</b> wins the toss — Team A (bans first)`;
+    els.tossResult.classList.add("show");
+    els.startBtn.classList.remove("hidden");
+  }, 1450);
+}
+
+function resetSetup() {
+  assignment = null;
+  els.coinArea.classList.add("hidden");
+  els.tossResult.classList.remove("show");
+  els.startBtn.classList.add("hidden");
+  els.tossBtn.classList.remove("hidden");
+  els.tossBtn.disabled = false;
+  els.tossBtn.textContent = "Coin Toss";
+}
+
+/* Filled by the coin toss: which entered team is A (bans first) vs B. */
+let assignment = null;
+
 function startVeto() {
-  const a = els.teamA.value.trim() || "Team A";
-  const b = els.teamB.value.trim() || "Team B";
+  // Fall back to a 50/50 if Start is somehow reached without a toss.
+  if (!assignment) assignment = rollToss();
   state = {
-    names: { A: a, B: b },
+    names: { A: assignment.A, B: assignment.B },
     steps: buildSteps(),
     stepIdx: 0,
     maps: MAP_POOL.map((m) => ({
@@ -307,10 +364,54 @@ function finish() {
   });
 }
 
+/* ---------- Copy result ---------- */
+function buildResultText() {
+  const ordered = [1, 2, 3]
+    .map((o) => state.maps.find((m) => m.pickedOrder === o))
+    .filter(Boolean);
+  const lines = [`${state.names.A} vs ${state.names.B} — Bo3 Map Veto`, ""];
+  ordered.forEach((m) => {
+    const tag = m.pickedOrder === 3 ? "decider" : `picked by ${teamName(m.pickedBy)}`;
+    lines.push(`${m.pickedOrder}. ${m.name} — ${tag}`);
+    lines.push(`   ${state.names.A}: ${m.sideTeam.A} | ${state.names.B}: ${m.sideTeam.B}`);
+  });
+  return lines.join("\n");
+}
+
+async function copyResult() {
+  const text = buildResultText();
+  let ok = false;
+  try {
+    await navigator.clipboard.writeText(text);
+    ok = true;
+  } catch (e) {
+    // Fallback for non-secure contexts / older browsers.
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
+    document.body.removeChild(ta);
+  }
+  els.copyBtn.textContent = ok ? "Copied!" : "Copy failed";
+  els.copyBtn.classList.toggle("copied", ok);
+  clearTimeout(copyResult._t);
+  copyResult._t = setTimeout(() => {
+    els.copyBtn.textContent = "Copy Result";
+    els.copyBtn.classList.remove("copied");
+  }, 1800);
+}
+
 /* ---------- Init ---------- */
+els.tossBtn.addEventListener("click", coinToss);
+els.coin.addEventListener("click", coinToss);
 els.startBtn.addEventListener("click", startVeto);
+els.copyBtn.addEventListener("click", copyResult);
 els.resetBtn.addEventListener("click", () => {
   els.result.classList.add("hidden");
+  resetSetup();
   els.setup.classList.remove("hidden");
 });
 renderPoolPreview();

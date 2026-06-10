@@ -25,20 +25,29 @@
       <h2 class="panel-title">Match Setup</h2>
       <div class="team-inputs">
         <label class="team-field team-a">
-          <span class="team-tag">Team A</span>
-          <input id="teamAName" type="text" maxlength="24" placeholder="Team A" />
+          <span class="team-tag">Team 1</span>
+          <input id="team1Name" type="text" maxlength="24" placeholder="Team 1" />
         </label>
         <div class="vs">VS</div>
         <label class="team-field team-b">
-          <span class="team-tag">Team B</span>
-          <input id="teamBName" type="text" maxlength="24" placeholder="Team B" />
+          <span class="team-tag">Team 2</span>
+          <input id="team2Name" type="text" maxlength="24" placeholder="Team 2" />
         </label>
       </div>
 
       <p class="pool-label">Competitive Map Pool</p>
       <div id="poolPreview" class="pool-preview"></div>
 
-      <button id="startBtn" class="btn-primary">Start Veto</button>
+      <div id="coinArea" class="coin-area hidden">
+        <div id="coin" class="coin" title="Click to re-toss">
+          <div class="coin-face coin-heads">1</div>
+          <div class="coin-face coin-tails">2</div>
+        </div>
+        <p id="tossResult" class="toss-result"></p>
+      </div>
+
+      <button id="tossBtn" class="btn-primary">Coin Toss</button>
+      <button id="startBtn" class="btn-primary hidden">Start Veto</button>
     </section>
 
     <!-- Veto screen -->
@@ -70,7 +79,10 @@
     <section id="result" class="panel hidden">
       <h2 class="panel-title">Veto Complete</h2>
       <div id="resultMaps" class="result-maps"></div>
-      <button id="resetBtn" class="btn-primary">New Veto</button>
+      <div class="result-actions">
+        <button id="copyBtn" class="btn-secondary">Copy Result</button>
+        <button id="resetBtn" class="btn-primary">New Veto</button>
+      </div>
     </section>
   </main>
 
