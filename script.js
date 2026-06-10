@@ -2,14 +2,15 @@
    Valorant Map Picker — Best-of-3 Veto
    Current competitive map pool. Edit this array if the pool rotates.
    ------------------------------------------------------------------ */
+const SPLASH = (id) => `https://media.valorant-api.com/maps/${id}/splash.png`;
 const MAP_POOL = [
-  { name: "Ascent",  art: "linear-gradient(135deg,#3a6ea5,#1d3c5c)" },
-  { name: "Bind",    art: "linear-gradient(135deg,#c97b3c,#6e3b1c)" },
-  { name: "Haven",   art: "linear-gradient(135deg,#4caf7d,#1e4d38)" },
-  { name: "Lotus",   art: "linear-gradient(135deg,#8e6fc4,#3d2c5c)" },
-  { name: "Sunset",  art: "linear-gradient(135deg,#e0843c,#7a3d1a)" },
-  { name: "Split",   art: "linear-gradient(135deg,#5a8fa8,#2a4a59)" },
-  { name: "Corrode", art: "linear-gradient(135deg,#7a8c5a,#3c4628)" },
+  { name: "Ascent",   img: SPLASH("7eaecc1b-4337-bbf6-6ab9-04b8f06b3319"), tint: "#3a6ea5" },
+  { name: "Breeze",   img: SPLASH("2fb9a4fd-47b8-4e7d-a969-74b4046ebd53"), tint: "#2fb6c9" },
+  { name: "Fracture", img: SPLASH("b529448b-4d60-346e-e89e-00a4c527a405"), tint: "#b58a3c" },
+  { name: "Haven",    img: SPLASH("2bee0dc9-4ffe-519b-1cbd-7fbe763a6047"), tint: "#4caf7d" },
+  { name: "Lotus",    img: SPLASH("2fe4ed3a-450a-948b-6d6b-e89a78e680a9"), tint: "#8e6fc4" },
+  { name: "Pearl",    img: SPLASH("fd267378-4d1d-484f-ff52-77821ed10dc2"), tint: "#2f9fd8" },
+  { name: "Split",    img: SPLASH("d960549e-485c-e861-8d71-aa9d1aed12a2"), tint: "#5a8fa8" },
 ];
 
 /* The Bo3 veto sequence (matches the official 10-step process). */
@@ -166,7 +167,8 @@ function renderMaps() {
 
     const art = document.createElement("div");
     art.className = "map-art";
-    art.style.background = m.art;
+    art.style.backgroundColor = m.tint;
+    if (m.img) art.style.backgroundImage = `url("${m.img}")`;
     card.appendChild(art);
 
     if (m.status === "banned") {
