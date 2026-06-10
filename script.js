@@ -117,10 +117,11 @@ function renderStepList() {
   els.stepList.innerHTML = "";
   state.steps.forEach((s, i) => {
     const li = document.createElement("li");
-    let txt = s.label
+    li.textContent = i + 1;
+    const txt = s.label
       .replace("Team A", state.names.A)
       .replace("Team B", state.names.B);
-    li.textContent = `${i + 1}. ${txt}`;
+    li.title = txt; // full step text on hover
     if (i < state.stepIdx) li.classList.add("done");
     if (i === state.stepIdx) li.classList.add("active");
     els.stepList.appendChild(li);
