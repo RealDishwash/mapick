@@ -93,6 +93,12 @@ function coinToss() {
   els.coin.classList.add("spinning");
   els.tossBtn.disabled = true;
 
+  // On the first toss the coin area goes from display:none to visible, so the
+  // browser has no prior transform to animate from. Force a reflow at the
+  // current rotation first, then set the new one so the spin always animates.
+  els.coin.style.transform = `rotateY(${coinDeg}deg)`;
+  void els.coin.offsetWidth;
+
   // Spin >=5 turns and land on the winner's face (heads = Team 1, tails = Team 2).
   const base = coinDeg + 360 * 5;
   coinDeg = Math.ceil(base / 360) * 360 + (assignment.team1Wins ? 0 : 180);

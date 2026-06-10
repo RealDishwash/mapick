@@ -86,12 +86,13 @@ main { max-width: 940px; margin: 0 auto; padding: 22px; }
   padding: 32px;
   margin-top: 18px;
 }
-/* red corner ticks framing the panel */
+/* red corner ticks on the SQUARE corners (top-right + bottom-left),
+   opposite the clipped corners so the brackets frame clean 90° angles */
 .panel::before, .panel::after {
   content: ""; position: absolute; width: 22px; height: 22px; pointer-events: none;
 }
-.panel::before { top: 8px; left: 8px; border-top: 2px solid var(--red); border-left: 2px solid var(--red); }
-.panel::after { bottom: 8px; right: 8px; border-bottom: 2px solid var(--red); border-right: 2px solid var(--red); }
+.panel::before { top: 8px; right: 8px; border-top: 2px solid var(--red); border-right: 2px solid var(--red); }
+.panel::after { bottom: 8px; left: 8px; border-bottom: 2px solid var(--red); border-left: 2px solid var(--red); }
 .hidden { display: none !important; }
 
 .panel-title {
