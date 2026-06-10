@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valorant Map Picker — Bo3 Veto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header class="site-header">
+    <h1>VALORANT <span>MAP PICKER</span></h1>
+    <p class="subtitle">Best-of-3 Map Veto</p>
+  </header>
+
+  <main>
+    <!-- Setup screen -->
+    <section id="setup" class="panel">
+      <h2 class="panel-title">Match Setup</h2>
+      <div class="team-inputs">
+        <label class="team-field team-a">
+          <span class="team-tag">Team A</span>
+          <input id="teamAName" type="text" maxlength="24" placeholder="Team A" />
+        </label>
+        <div class="vs">VS</div>
+        <label class="team-field team-b">
+          <span class="team-tag">Team B</span>
+          <input id="teamBName" type="text" maxlength="24" placeholder="Team B" />
+        </label>
+      </div>
+
+      <p class="pool-label">Competitive Map Pool</p>
+      <div id="poolPreview" class="pool-preview"></div>
+
+      <button id="startBtn" class="btn-primary">Start Veto</button>
+    </section>
+
+    <!-- Veto screen -->
+    <section id="veto" class="panel hidden">
+      <div class="status-bar">
+        <div id="actorBadge" class="actor-badge">Team A</div>
+        <p id="instruction" class="instruction">Ban a map</p>
+      </div>
+
+      <ol id="stepList" class="step-list"></ol>
+
+      <div id="mapGrid" class="map-grid"></div>
+
+      <!-- Side selection overlay -->
+      <div id="sidePicker" class="side-picker hidden">
+        <p id="sidePrompt" class="side-prompt"></p>
+        <div class="side-buttons">
+          <button class="btn-side attack" data-side="Attack">
+            <span class="side-icon">⚔</span> Attack
+          </button>
+          <button class="btn-side defense" data-side="Defense">
+            <span class="side-icon">🛡</span> Defense
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Result screen -->
+    <section id="result" class="panel hidden">
+      <h2 class="panel-title">Veto Complete</h2>
+      <div id="resultMaps" class="result-maps"></div>
+      <button id="resetBtn" class="btn-primary">New Veto</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Bo3 veto order: A ban · B ban · A ban · B ban · A pick · B side · B pick · A side · decider · A side</p>
+    <p class="disclaimer">Unofficial fan tool. Not affiliated with Riot Games.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
