@@ -2,7 +2,7 @@
 
 A simple, readable Best-of-3 map veto tool for the current Valorant competitive map pool.
 
-**Live:** https://RealDishwash.github.io/valorant-map-picker/
+**Live:** https://RealDishwash.github.io/mapick/
 
 ## Veto process
 
