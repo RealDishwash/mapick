@@ -237,7 +237,6 @@ main { max-width: 880px; margin: 0 auto; padding: 22px; }
   margin-top: 22px; text-align: center; padding: 22px;
   background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px;
 }
-.side-prompt { font-size: 1rem; font-weight: 600; margin-bottom: 16px; }
 .side-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 .btn-side {
   font: inherit; font-size: 1rem; font-weight: 700;

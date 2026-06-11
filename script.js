@@ -81,7 +81,6 @@ const els = {
   stepList: document.getElementById("stepList"),
   mapGrid: document.getElementById("mapGrid"),
   sidePicker: document.getElementById("sidePicker"),
-  sidePrompt: document.getElementById("sidePrompt"),
   resultMaps: document.getElementById("resultMaps"),
   resetBtn: document.getElementById("resetBtn"),
   copyBtn: document.getElementById("copyBtn"),
@@ -228,15 +227,14 @@ function renderVeto() {
     els.actorBadge.className =
       "actor-badge " + (step.team === "A" ? "team-a-color" : "team-b-color");
     const map = state.maps[findMapByOrder(step.mapIndex)];
-    els.instruction.textContent = `${teamName(step.team)} — pick starting side on ${map.name}`;
+    els.instruction.textContent = `Pick starting side on ${map.name}`;
     showSidePicker(step, map);
   } else {
     hideSidePicker();
     els.actorBadge.textContent = teamName(step.team);
     els.actorBadge.className =
       "actor-badge " + (step.team === "A" ? "team-a-color" : "team-b-color");
-    const verb = step.type === "ban" ? "ban" : "pick";
-    els.instruction.textContent = `${teamName(step.team)} — ${verb} a map`;
+    els.instruction.textContent = step.type === "ban" ? "Ban a map" : "Pick a map";
   }
   renderMaps();
 }
@@ -317,8 +315,6 @@ function handleMapClick(idx) {
 /* ---------- Side picker ---------- */
 function showSidePicker(step, map) {
   els.sidePicker.classList.remove("hidden");
-  const chooser = teamName(step.team);
-  els.sidePrompt.textContent = `${chooser} — choose your starting side on ${map.name}`;
   els.sidePicker.querySelectorAll(".btn-side").forEach((btn) => {
     btn.onclick = () => chooseSide(step, map, btn.dataset.side);
   });
@@ -401,11 +397,17 @@ function buildResultText() {
   const ordered = [1, 2, 3]
     .map((o) => state.maps.find((m) => m.pickedOrder === o))
     .filter(Boolean);
-  const lines = [`${state.names.A} vs ${state.names.B} — Bo3 Map Veto`, ""];
+  const lines = [
+    `## ${state.names.A} vs ${state.names.B} — Bo3 Map Veto`,
+    "",
+    `| # | Map | Pick | ${state.names.A} | ${state.names.B} |`,
+    "|---|-----|------|------|------|",
+  ];
   ordered.forEach((m) => {
-    const tag = m.pickedOrder === 3 ? "decider" : `picked by ${teamName(m.pickedBy)}`;
-    lines.push(`${m.pickedOrder}. ${m.name} — ${tag}`);
-    lines.push(`   ${state.names.A}: ${m.sideTeam.A} | ${state.names.B}: ${m.sideTeam.B}`);
+    const pick = m.pickedOrder === 3 ? "Decider" : teamName(m.pickedBy);
+    lines.push(
+      `| ${m.pickedOrder} | ${m.name} | ${pick} | ${m.sideTeam.A} | ${m.sideTeam.B} |`,
+    );
   });
   return lines.join("\n");
 }
