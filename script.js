@@ -49,19 +49,19 @@ async function loadMapPool() {
   }
 }
 
-/* The Bo3 veto sequence (matches the official 10-step process). */
+/* The Bo3 veto sequence. */
 function buildSteps() {
   return [
-    { type: "ban",  team: "A", label: "Team A bans a map" },
-    { type: "ban",  team: "B", label: "Team B bans a map" },
-    { type: "ban",  team: "A", label: "Team A bans a map" },
-    { type: "ban",  team: "B", label: "Team B bans a map" },
-    { type: "pick", team: "A", label: "Team A picks the first map", mapIndex: 0 },
-    { type: "side", team: "B", label: "Team B selects starting side for the first map", mapIndex: 0 },
-    { type: "pick", team: "B", label: "Team B picks the second map", mapIndex: 1 },
-    { type: "side", team: "A", label: "Team A selects starting side for the second map", mapIndex: 1 },
+    { type: "ban",     team: "A", label: "Team A bans a map" },
+    { type: "ban",     team: "B", label: "Team B bans a map" },
+    { type: "pick",    team: "A", label: "Team A picks the first map", mapIndex: 0 },
+    { type: "side",    team: "B", label: "Team B selects starting side for the first map", mapIndex: 0 },
+    { type: "pick",    team: "B", label: "Team B picks the second map", mapIndex: 1 },
+    { type: "side",    team: "A", label: "Team A selects starting side for the second map", mapIndex: 1 },
+    { type: "ban",     team: "A", label: "Team A bans a map" },
+    { type: "ban",     team: "B", label: "Team B bans a map" },
     { type: "decider", team: null, label: "Remaining map becomes the decider", mapIndex: 2 },
-    { type: "side", team: "A", label: "Team A selects starting side for the decider map", mapIndex: 2 },
+    { type: "side",    team: "A", label: "Team A selects starting side for the decider map", mapIndex: 2 },
   ];
 }
 
