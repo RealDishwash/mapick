@@ -7,21 +7,20 @@
    rotates. Splash images and names are pulled live from valorant-api,
    with the embedded UUIDs used only as an offline fallback.
    ------------------------------------------------------------------ */
-const COMPETITIVE_POOL = ["Ascent", "Breeze", "Fracture", "Haven", "Lotus", "Pearl", "Split"];
+const COMPETITIVE_POOL = ["Ascent", "Breeze", "Haven", "Lotus", "Split", "Summit"];
 
 const SPLASH = (id) => `https://media.valorant-api.com/maps/${id}/splash.png`;
 const FALLBACK_SPLASH = {
-  Ascent:   "7eaecc1b-4337-bbf6-6ab9-04b8f06b3319",
-  Breeze:   "2fb9a4fd-47b8-4e7d-a969-74b4046ebd53",
-  Fracture: "b529448b-4d60-346e-e89e-00a4c527a405",
-  Haven:    "2bee0dc9-4ffe-519b-1cbd-7fbe763a6047",
-  Lotus:    "2fe4ed3a-450a-948b-6d6b-e89a78e680a9",
-  Pearl:    "fd267378-4d1d-484f-ff52-77821ed10dc2",
-  Split:    "d960549e-485c-e861-8d71-aa9d1aed12a2",
+  Ascent:  "7eaecc1b-4337-bbf6-6ab9-04b8f06b3319",
+  Breeze:  "2fb9a4fd-47b8-4e7d-a969-74b4046ebd53",
+  Haven:   "2bee0dc9-4ffe-519b-1cbd-7fbe763a6047",
+  Lotus:   "2fe4ed3a-450a-948b-6d6b-e89a78e680a9",
+  Split:   "d960549e-485c-e861-8d71-aa9d1aed12a2",
+  Summit:  "756da597-416b-c0f2-f47b-afbdf28670bc",
 };
 const TINTS = {
-  Ascent: "#3a6ea5", Breeze: "#2fb6c9", Fracture: "#b58a3c", Haven: "#4caf7d",
-  Lotus: "#8e6fc4", Pearl: "#2f9fd8", Split: "#5a8fa8",
+  Ascent: "#3a6ea5", Breeze: "#2fb6c9", Haven: "#4caf7d",
+  Lotus: "#8e6fc4", Split: "#5a8fa8", Summit: "#6a9cbf",
 };
 
 /* Built from the fallback immediately so the app always works, then
